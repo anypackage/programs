@@ -13,6 +13,9 @@
     CmdletsToExport = @()
     AliasesToExport = @()
     PrivateData = @{
+        AnyPackage = @{
+            Providers = 'Programs'
+        }
         PSData = @{
             Tags = @('AnyPackage', 'Provider', 'Programs', 'Windows')
             LicenseUri = 'https://github.com/AnyPackage/AnyPackage.Programs/blob/main/LICENSE'
