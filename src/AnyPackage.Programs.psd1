@@ -1,5 +1,5 @@
 @{
-    RootModule = ''
+    RootModule = 'ProgramsProvider.dll'
     ModuleVersion = '0.1.0'
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '84cf5334-85e0-4263-8471-60394099cefb'
@@ -13,6 +13,9 @@
     CmdletsToExport = @()
     AliasesToExport = @()
     PrivateData = @{
+        AnyPackage = @{
+            Providers = 'Programs'
+        }
         PSData = @{
             Tags = @('AnyPackage', 'Provider', 'Programs', 'Windows')
             LicenseUri = 'https://github.com/AnyPackage/AnyPackage.Programs/blob/main/LICENSE'

@@ -21,11 +21,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: .NET Build
+        run: dotnet build --configuration Release
+
+      - name: Create module
+        run: |
+          New-Item module -ItemType Directory
+          $settings = Import-PowerShellDataFile ./BuildSettings.psd1
+          Copy-Item @settings
+
       - name: Upload module
         uses: actions/upload-artifact@v3
         with:
           name: module
-          path: ./src/
+          path: ./module/
 
   Test:
     needs: Build
