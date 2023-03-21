@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: module
-          path: ./src/
+          path: ./module/
 
   Test:
     needs: Build
