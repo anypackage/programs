@@ -66,6 +66,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Download module
+        uses: actions/download-artifact@v3
+        with:
+          name: module
+          path: module
+
       - name: Import certificate
         env:
           CERTIFICATE_BASE64: ${{ secrets.CERTIFICATE_BASE64 }}
@@ -81,7 +87,7 @@ jobs:
         run: |
           $config = Import-PowerShellDataFile SignSettings.psd1
           $config['Certificate'] = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
-          Set-Location .\src
+          Set-Location .\module
           Set-AuthenticodeSignature @config
 
       - name: Create and sign catalog file
@@ -89,7 +95,7 @@ jobs:
           $config = Import-PowerShellDataFile SignSettings.psd1
           $config['FilePath'] = 'AnyPackage.Programs.cat'
           $config['Certificate'] = Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert
-          Set-Location .\src
+          Set-Location .\module
           New-FileCatalog $config['FilePath'] -CatalogVersion 2
           Set-AuthenticodeSignature @config
 
@@ -97,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: module-signed
-          path: ./src/
+          path: ./module/
 
   Publish:
     needs: Sign
