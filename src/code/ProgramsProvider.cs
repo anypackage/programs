@@ -113,7 +113,7 @@ namespace AnyPackage.Provider.Programs
 
                 packageVersion = new PackageVersion(version);
 
-                comment = keyValues.ContainsKey("Comment") ? keyValues["Comment"].ToString() : "";
+                comment = keyValues.ContainsKey("Comments") ? keyValues["Comments"].ToString() : "";
 
                 if (request.IsMatch(name, packageVersion))
                 {
