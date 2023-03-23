@@ -11,9 +11,5 @@ namespace AnyPackage.Provider.Programs
         [Parameter]
         [Alias("IncludeSystemComponent")]
         public SwitchParameter SystemComponent { get; set; }
-
-        [Parameter]
-        [Alias("IncludeWindowsInstaller")]
-        public SwitchParameter WindowsInstaller { get; set; }
     }
 }
