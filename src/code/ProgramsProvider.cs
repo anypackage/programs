@@ -72,15 +72,6 @@ namespace AnyPackage.Provider.Programs
                     continue;
                 }
 
-                if (keyValues.ContainsKey("WindowsInstaller")
-                    && keyValues["WindowsInstaller"].ToString() == "1"
-                    && (dynamicParameters is not null
-                    && !dynamicParameters.WindowsInstaller
-                    || dynamicParameters is null))
-                {
-                    continue;
-                }
-
                 if (!keyValues.ContainsKey("DisplayName")
                     || string.IsNullOrWhiteSpace(keyValues["DisplayName"].ToString()))
                 {
