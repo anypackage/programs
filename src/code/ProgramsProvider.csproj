@@ -4,6 +4,7 @@
     <TargetFramework>net461</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <Copyright>© 2023 Thomas Nieto. All rights reserved.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
