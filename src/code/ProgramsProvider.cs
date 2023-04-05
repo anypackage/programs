@@ -11,10 +11,7 @@ namespace AnyPackage.Provider.Programs
     [PackageProvider("Programs")]
     public sealed class ProgramsProvider : PackageProvider, IGetPackage
     {
-        private readonly static Guid s_id = new Guid("4100e661-4a03-4e2a-855a-b9d17ed18b46");
         private const string _uninstallKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
-
-        public ProgramsProvider() : base(s_id) { }
 
         protected override object? GetDynamicParameters(string commandName)
         {
@@ -47,9 +44,6 @@ namespace AnyPackage.Provider.Programs
         {
             Dictionary<string, object> keyValues = new Dictionary<string, object>();
             var dynamicParameters = request.DynamicParameters as GetPackageDynamicParameters;
-            PackageSourceInfo? source;
-            PackageVersion packageVersion;
-            string name, version, location, comment;
 
             foreach (var subKeyName in key.GetSubKeyNames())
             {
@@ -78,40 +72,27 @@ namespace AnyPackage.Provider.Programs
                     continue;
                 }
 
-                name = keyValues["DisplayName"].ToString();
+                var name = keyValues["DisplayName"].ToString();
 
+                PackageSourceInfo? source;
                 if (keyValues.ContainsKey("InstallLocation")
                     && !string.IsNullOrWhiteSpace(keyValues["InstallLocation"].ToString()))
                 {
-                    location = keyValues["InstallLocation"].ToString();
-                    source = request.NewSourceInfo(location, location);
+                    source = new PackageSourceInfo((string)keyValues["InstallLocation"],
+                                                   (string)keyValues["InstallLocation"],
+                                                   ProviderInfo);
                 }
                 else
                 {
                     source = null;
                 }
 
-                if (keyValues.ContainsKey("DisplayVersion")
-                    && !string.IsNullOrWhiteSpace(keyValues["DisplayVersion"].ToString()))
-                {
-                    version = keyValues["DisplayVersion"].ToString();
-                }
-                else
-                {
-                    request.WriteVerbose($"Package '{name}' does not have a version, changing to '0'.");
-                    version = "0";
-                }
+                var comment = keyValues.ContainsKey("Comments") ? keyValues["Comments"].ToString() : "";
 
-                packageVersion = new PackageVersion(version);
-
-                comment = keyValues.ContainsKey("Comments") ? keyValues["Comments"].ToString() : "";
-
-                if (request.IsMatch(name, packageVersion))
+                if (request.IsMatch(name, (string)keyValues["DisplayVersion"]))
                 {
-                    request.WritePackage(name,
-                                     new PackageVersion(version),
-                                     comment,
-                                     source);
+                    var package = new PackageInfo(name, (string)keyValues["DisplayVersion"], source, comment, ProviderInfo);
+                    request.WritePackage(package);
                 }
             }
         }

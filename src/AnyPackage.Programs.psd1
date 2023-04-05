@@ -8,7 +8,7 @@
     Description = 'Windows programs provider for AnyPackage.'
     PowerShellVersion = '5.1'
     RequiredModules = @(
-        @{ ModuleName = 'AnyPackage'; ModuleVersion = '0.4.0' })
+        @{ ModuleName = 'AnyPackage'; ModuleVersion = '0.5.0' })
     FunctionsToExport = @()
     CmdletsToExport = @()
     AliasesToExport = @()
