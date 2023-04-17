@@ -96,7 +96,9 @@ namespace AnyPackage.Provider.Programs
                     package = new PackageInfo(name, (string)keyValues["DisplayVersion"], source, comment, null, keyValues, ProviderInfo);
                     request.WritePackage(package);
                 }
-                else if (!keyValues.ContainsKey("DisplayVersion") && request.IsMatch(name))
+                else if (!keyValues.ContainsKey("DisplayVersion")
+                         && request.Version is null
+                         && request.IsMatch(name))
                 {
                     package = new PackageInfo(name, null, source, comment, null, keyValues, ProviderInfo);
                     request.WritePackage(package);
