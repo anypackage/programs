@@ -1,6 +1,6 @@
 @{
     RootModule = 'ProgramsProvider.dll'
-    ModuleVersion = '0.1.1'
+    ModuleVersion = '0.2.0'
     CompatiblePSEditions = @('Desktop', 'Core')
     GUID = '84cf5334-85e0-4263-8471-60394099cefb'
     Author = 'Thomas Nieto'
