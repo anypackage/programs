@@ -97,8 +97,8 @@ namespace AnyPackage.Provider.Programs
                     request.WritePackage(package);
                 }
                 else if (!keyValues.ContainsKey("DisplayVersion")
-                         && request.Version is null
-                         && request.IsMatch(name))
+                         && request.IsMatch(name)
+                         && (request.Version is null || request.Version.ToString() == "*"))
                 {
                     package = new PackageInfo(name, null, source, comment, null, keyValues, ProviderInfo);
                     request.WritePackage(package);
