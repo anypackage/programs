@@ -89,9 +89,16 @@ namespace AnyPackage.Provider.Programs
 
                 var comment = keyValues.ContainsKey("Comments") ? keyValues["Comments"].ToString() : "";
 
-                if (request.IsMatch(name, (string)keyValues["DisplayVersion"]))
+                PackageInfo package;
+                if (keyValues.ContainsKey("DisplayVersion")
+                    && request.IsMatch(name, (string)keyValues["DisplayVersion"]))
                 {
-                    var package = new PackageInfo(name, (string)keyValues["DisplayVersion"], source, comment, ProviderInfo);
+                    package = new PackageInfo(name, (string)keyValues["DisplayVersion"], source, comment, null, keyValues, ProviderInfo);
+                    request.WritePackage(package);
+                }
+                else if (!keyValues.ContainsKey("DisplayVersion") && request.IsMatch(name))
+                {
+                    package = new PackageInfo(name, null, source, comment, null, keyValues, ProviderInfo);
                     request.WritePackage(package);
                 }
             }
