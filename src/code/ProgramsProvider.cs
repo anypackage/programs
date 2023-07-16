@@ -42,12 +42,11 @@ namespace AnyPackage.Provider.Programs
 
         private void GetPackage(RegistryKey key, PackageRequest request)
         {
-            Dictionary<string, object> keyValues = new Dictionary<string, object>();
             var dynamicParameters = request.DynamicParameters as GetPackageDynamicParameters;
 
             foreach (var subKeyName in key.GetSubKeyNames())
             {
-                keyValues.Clear();
+                Dictionary<string, object> keyValues = new Dictionary<string, object>();
                 var subKey = key.OpenSubKey(subKeyName);
 
                 if (subKey is null) { continue; }
