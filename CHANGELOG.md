@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2023-07-16
+
+### Fixed
+
+- Fix metadata (#26)
+
 ## [0.2.1] - 2023-04-17
 
 ### Fixed
@@ -35,7 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release
 
-[Unreleased]: https://github.com/anypackage/programs/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/anypackage/programs/compare/v0.2.2...HEAD
+[0.2.2]: https://github.com/anypackage/programs/releases/tag/v0.2.2
 [0.2.1]: https://github.com/anypackage/programs/releases/tag/v0.2.1
 [0.2.0]: https://github.com/anypackage/programs/releases/tag/v0.2.0
 [0.1.1]: https://github.com/anypackage/programs/releases/tag/v0.1.1
