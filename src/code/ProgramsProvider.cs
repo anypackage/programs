@@ -5,13 +5,17 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Management.Automation;
 
 namespace AnyPackage.Provider.Programs
 {
     [PackageProvider("Programs")]
-    public sealed class ProgramsProvider : PackageProvider, IGetPackage
+    public sealed class ProgramsProvider : PackageProvider, IGetPackage, IUninstallPackage
     {
         private const string _uninstallKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+        private const string _uninstallString = "UninstallString";
+        private const string _quietUninstallString = "QuietUninstallString";
 
         protected override object? GetDynamicParameters(string commandName)
         {
@@ -38,6 +42,29 @@ namespace AnyPackage.Provider.Programs
             using var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default)
                                         .OpenSubKey(_uninstallKey);
             GetPackage(hkcu, request);
+        }
+
+        public void UninstallPackage(PackageRequest request)
+        {
+            if (request.Package is not null)
+            {
+                UninstallPackage(request.Package, request);
+            }
+            else
+            {
+                using var powershell = PowerShell.Create();
+                powershell.AddCommand("Get-Package").AddParameter("Name", request.Name);
+
+                if (request.Version is not null)
+                {
+                    powershell.AddParameter("Version", request.Version);
+                }
+
+                foreach (var package in powershell.Invoke<PackageInfo>())
+                {
+                    UninstallPackage(package, request);
+                }
+            }
         }
 
         private void GetPackage(RegistryKey key, PackageRequest request)
@@ -103,6 +130,81 @@ namespace AnyPackage.Provider.Programs
                     request.WritePackage(package);
                 }
             }
+        }
+
+        private void UninstallPackage(PackageInfo package, PackageRequest request)
+        {
+            string uninstallString;
+
+            if (package.Metadata.ContainsKey(_quietUninstallString))
+            {
+                request.WriteVerbose("Quiet uninstall string found.");
+                uninstallString = package.Metadata[_quietUninstallString].ToString();
+            }
+            else if (package.Metadata.ContainsKey(_uninstallString))
+            {
+                request.WriteVerbose("Uninstall string found.");
+                uninstallString = package.Metadata[_uninstallString].ToString();
+            }
+            else
+            {
+                throw new InvalidOperationException($"Package '{package.Name}' with version '{package.Version} cannot find uninstall program.");
+            }
+
+            using var process = GetProcess(uninstallString);
+            process.Start();
+            process.WaitForExit();
+
+            request.WritePackage(package);
+        }
+
+        private Process GetProcess(string text)
+        {
+            bool quoted, found;
+            int i, position;
+
+            quoted = found = false;
+            i = position = 0;
+
+            if (text[0] == '"')
+            {
+                quoted = true;
+            }
+
+            for (i = quoted ? 1 : 0; i < text.Length; i++)
+            {
+                if (text[i] == ' ' && !quoted)
+                {
+                    position = i;
+                    found = true;
+                    break;
+                }
+                else if (text[i] == '"' && quoted)
+                {
+                    position = i;
+                    found = true;
+                    break;
+                }
+            }
+
+            var process = new Process();
+            
+            if (found && quoted)
+            {
+                process.StartInfo.FileName = text.Substring(0, position + 1).Replace("\"", "");
+                process.StartInfo.Arguments = text.Substring(position + 1, text.Length - position - 1).Trim();
+            }
+            else if (found)
+            {
+                process.StartInfo.FileName = text.Substring(0, position);
+                process.StartInfo.Arguments = text.Substring(position, text.Length - position).Trim();
+            }
+            else
+            {
+                process.StartInfo.FileName = text;
+            }
+
+            return process;
         }
     }
 }
