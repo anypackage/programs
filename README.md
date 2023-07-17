@@ -22,3 +22,9 @@ Import-Module AnyPackage.Programs
 ```PowerShell
 Get-Package -Name *7zip*
 ```
+
+### Uninstall package
+
+```PowerShell
+Get-Package -Name *7zip* | Uninstall-Package
+```
