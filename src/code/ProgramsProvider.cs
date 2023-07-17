@@ -52,7 +52,7 @@ namespace AnyPackage.Provider.Programs
             }
             else
             {
-                using var powershell = PowerShell.Create();
+                using var powershell = PowerShell.Create(RunspaceMode.CurrentRunspace);
                 powershell.AddCommand("Get-Package").AddParameter("Name", request.Name);
 
                 if (request.Version is not null)
